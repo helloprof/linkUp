@@ -1,0 +1,30 @@
+[
+    {
+        "id":1,
+        "school": "Seneca College"
+    },
+    {
+        "id":2,
+        "school": "University of Guelph"
+    },
+    {
+        "id":3,
+        "school": "George Brown College"
+    },
+    {
+        "id":4,
+        "school": "University of Toronto"
+    },
+    {
+        "id":5,
+        "school": "McMaster University"
+    },
+    {
+        "id":6,
+        "school": "UOIT"
+    },
+    {
+        "id":7,
+        "school": "University of Birmingham"
+    }
+]
