@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "username": "suluxan",
+        "jobTitle": "Professor",
+        "bio":"software and science stuff",
+        "priorExperience": ["Research Student", "Bioinformatician"],
+        "education": [{
+            "school": 2,
+            "date": 2013
+        },{
+            "school": 1,
+            "date": 2017
+        },{
+            "school": 7,
+            "date": 2022
+        }],
+        "image": "",
+        "webpage": "",
+        "skills": [
+            "Python",
+            "Javascript",
+            "C++"
+        ],
+        "position": 1
+    }
+
+
+]
