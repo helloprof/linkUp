@@ -5,15 +5,20 @@ const express = require("express")
 const app = express()
 const HTTP_PORT = 8080
 
+app.use(express.static("public"))
 
 app.get("/", (req, res) => {
     // req.get("User-Agent")
-    res.send("hello")
+    res.sendFile(path.join(__dirname, "/views/profiles.html"))
 })
 
 app.get("/profiles", (req, res) => {
+    if (req.query.profileID) {
+        res.send("yup that's it")
+    }
     linkUpService.getAllProfiles().then((profiles) => {
         res.json(profiles)
+        // res.sendFile(path.join(__dirname, "/views/profiles.html"))
     }).catch((err) => {
         console.log(err)
     })
