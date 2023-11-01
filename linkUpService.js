@@ -44,19 +44,31 @@ function getPositionByID(id) {
     return new Promise((resolve, reject) => {
 
         const returnedPosition = positions.filter((position) => position.id == id);
-        if (returnedPosition) {
-            resolve(returnedPosition[0])
-        } else {
+        console.log("errors")
+        console.log(returnedPosition)
+        if (returnedPosition < 1) {
             reject("position not found!")
+        } else {
+            resolve(returnedPosition[0])
         }
     })
 }
 
+function getAllPositions() {
+    return new Promise((resolve, reject) => {
+        if (positions.length < 1) {
+            reject("no profiles found!")
+        } else {
+            resolve(positions)
+        }
+    })
+}
 // getPositionsByID(1).then((data) => console.log(data))
 
 module.exports = {
     getAllProfiles, 
     getProfileByID,
     getPositionByID,
-    getProfileByPositionID
+    getProfileByPositionID,
+    getAllPositions
 }
