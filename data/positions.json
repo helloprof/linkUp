@@ -1,26 +1,26 @@
 [
     {
         "id":1,
-        "position": "Professor"
+        "name": "Professor"
     },
     {
         "id":2,
-        "position": "Full Stack Developer"
+        "name": "Full Stack Developer"
     },
     {
         "id":3,
-        "position": "Front End Dev"
+        "name": "Front End Dev"
     },
     {
         "id":4,
-        "position": "Backend Dev"
+        "name": "Backend Dev"
     },
     {
         "id":5,
-        "position": "Dev Ops"
+        "name": "Dev Ops"
     },
     {
         "id":6,
-        "position": "Prompt Engineer"
+        "name": "Prompt Engineer"
     }
 ]
