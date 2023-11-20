@@ -65,15 +65,7 @@ app.get("/positions", (req, res) => {
 })
 
 
-app.get("/positions/:id", (req, res) => {
-    linkUpService.getPositionByID(req.params.id).then((position) => {
-        res.render('positionCard', {
-            position: position
-        })
-    }).catch((err) => {
-        res.status(500).end()
-    })
-})
+
 
 
 
@@ -86,8 +78,28 @@ app.get("/profiles/position/:id", (req, res) => {
     })
 })
 
+app.get('/positions/new', (req, res) => {
+    res.render('addPositions')
+})
+
+app.get("/positions/:id", (req, res) => {
+    linkUpService.getPositionByID(req.params.id).then((position) => {
+        res.render('positionCard', {
+            position: position
+        })
+    }).catch((err) => {
+        res.status(500).end()
+    })
+})
+
 app.get('/profiles/new', (req, res) => {
     res.render('addProfiles')
+})
+
+app.post('/positions/new', (req, res) => {
+    linkUpService.addPosition(req.body).then(() => {
+        res.redirect("/positions")
+    })
 })
 
 app.post('/profiles/new', upload.single('image'), function (req, res, next) {
@@ -149,9 +161,14 @@ app.get('*', function(req, res){
 })
 
 
-app.listen(HTTP_PORT, () => {
-    console.log("server listening on "+ HTTP_PORT)
+linkUpService.initialize().then(() => {
+    app.listen(HTTP_PORT, () => {
+        console.log("server listening on "+ HTTP_PORT)
+    })
+}).catch((err) => {
+    console.log(err)
 })
+
 
 
 
