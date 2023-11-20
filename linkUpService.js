@@ -2,7 +2,60 @@ const profiles = require("./data/profiles.json")
 const positions = require("./data/positions.json")
 const schools = require("./data/schools.json")
 
+const env = require("dotenv")
+env.config()
+
+const Sequelize = require('sequelize');
+let sequelize = new Sequelize(process.env.PGDATABASE, process.env.PGUSER, process.env.PGPASSWORD, {
+    host: process.env.PGHOST,
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: { rejectUnauthorized: false },
+    },
+})
+
+const Profile = sequelize.define('Profile', {
+    profileID: {
+        type: Sequelize.INTEGER,
+        primaryKey: true, // use "project_id" as a primary key
+        autoIncrement: true, // automatically increment the value
+    }, 
+    name: Sequelize.STRING, 
+    username: Sequelize.STRING, 
+    bio: Sequelize.TEXT,
+    // position
+    skills: Sequelize.STRING,
+    image: Sequelize.STRING
+
+})
+const Position = sequelize.define("Position", {
+    positionID: {
+        type: Sequelize.INTEGER,
+        primaryKey: true, // use "project_id" as a primary key
+        autoIncrement: true, // automatically increment the value
+    }, 
+    name: Sequelize.STRING
+})
+
+
+Profile.belongsTo(Position, { foreignKey: 'positionID'})
+
+
 const profilesUpdated = []
+
+function initialize() {
+    return new Promise((resolve, reject) => {
+        sequelize.sync().then(() => {
+            console.log("POSTGRES DB SYNC'd")
+            resolve()
+        }).catch((err) => {
+            console.log(err)
+            reject(err)
+        })
+    })
+}
+
 
 function getAllProfiles() {
     return new Promise((resolve, reject) => {
@@ -63,12 +116,22 @@ function getAllPositions() {
         }
     })
 }
+
+function addPosition(formData) {
+    return new Promise((resolve, reject) => {
+        Position.create(formData).then((data) => {
+            resolve()
+        })
+    })
+}
 // getPositionsByID(1).then((data) => console.log(data))
 
 module.exports = {
-    getAllProfiles, 
+    initialize,
+    getAllProfiles,
     getProfileByID,
     getPositionByID,
     getProfileByPositionID,
-    getAllPositions
+    getAllPositions,
+    addPosition
 }
