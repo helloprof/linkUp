@@ -17,14 +17,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // const upload = multer();
 
-const storage = multer.diskStorage({
-    destination: 'public/images/',
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname));
-    },
-  });
-  
-const upload = multer({ storage: storage });
+// const storage = multer.diskStorage({
+//     destination: 'public/images/',
+//     filename: function (req, file, cb) {
+//       cb(null, Date.now() + path.extname(file.originalname));
+//     },
+//   });
+
+const upload = multer();
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET,
+    secure: true
+});
+
 
 app.get("/", (req, res) => {
     // req.get("User-Agent")
@@ -93,57 +101,71 @@ app.get("/positions/:id", (req, res) => {
 })
 
 app.get('/profiles/new', (req, res) => {
-    res.render('addProfiles')
+    linkUpService.getAllPositions().then((positions) => {
+        res.render('addProfiles', {
+            positions: positions
+        })
+    }).catch((err) => {
+        res.send(err)
+    })
 })
 
 app.post('/positions/new', (req, res) => {
     linkUpService.addPosition(req.body).then(() => {
         res.redirect("/positions")
+    }).catch((err) => {
+        console.log(err)
+        res.send(err)
     })
 })
 
 app.post('/profiles/new', upload.single('image'), function (req, res, next) {
-    // if (req.file) {
+    if (req.file) {
     // API from: https://cloudinary.com/blog/node_js_file_upload_to_a_local_server_or_to_the_cloud
-    // let streamUpload = (req) => {
-    //     return new Promise((resolve, reject) => {
-    //         let stream = cloudinary.uploader.upload_stream(
-    //           (error, result) => {
-    //             if (result) {
-    //               resolve(result)
-    //             } else {
-    //               reject(error)
-    //             }
-    //           }
-    //         );
+    let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+            let stream = cloudinary.uploader.upload_stream(
+              (error, result) => {
+                if (result) {
+                  resolve(result)
+                } else {
+                  reject(error)
+                }
+              }
+            );
 
-    //       streamifier.createReadStream(req.file.buffer).pipe(stream)
-    //     })
-    // }
+          streamifier.createReadStream(req.file.buffer).pipe(stream)
+        })
+    }
 
-    // async function upload(req) {
-    //     let result = await streamUpload(req)
-    //     console.log(result)
-    // }
+    async function upload(req) {
+        let result = await streamUpload(req)
+        console.log(result)
+    }
 
-    // upload(req).then((uploaded) => {
-    //     console.log(uploaded.url)
-    //     // req.body.image = uploaded.url 
-    //     processUpload(uploaded.url)
-    // })
-    // } else {
-    //     processUpload("")
-    // }
+    upload(req).then((uploaded) => {
+        console.log(uploaded.url)
+        // req.body.image = uploaded.url 
+        processUpload(uploaded.url)
+    })
+    } else {
+        processUpload("")
+    }
 
-    // function processUpload(uploadURL) {
-    //     req.body.image = uploaded.url 
+    function processUpload(uploadURL) {
+        req.body.image = uploadURL
+        linkUpService.addProfile(req.body).then(() => {
+            res.redirect("/")
+        }).catch((err) => {
+            console.log(err)
+            res.send(err)
+        })
 
-
-    // }
+    }
 
     
-    console.log(req.file)
-    res.send(req.body)
+    // console.log(req.file)
+    // res.send(req.body)
 })
 
 app.get("/profiles/:id", (req, res) => {
