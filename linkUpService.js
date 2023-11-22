@@ -24,8 +24,9 @@ const Profile = sequelize.define('Profile', {
     name: Sequelize.STRING, 
     username: Sequelize.STRING, 
     bio: Sequelize.TEXT,
+    province: Sequelize.TEXT,
     // position
-    skills: Sequelize.STRING,
+    // skills: Sequelize.STRING,
     image: Sequelize.STRING
 
 })
@@ -109,11 +110,15 @@ function getPositionByID(id) {
 
 function getAllPositions() {
     return new Promise((resolve, reject) => {
-        if (positions.length < 1) {
-            reject("no profiles found!")
-        } else {
-            resolve(positions)
-        }
+        Position.findAll().then((positions) => {
+            if (positions.length > 0) {
+                resolve(positions)
+            } else {
+                reject("No positions found!")
+            }
+        }).catch((err) => {
+            reject(err)
+        })
     })
 }
 
@@ -121,6 +126,18 @@ function addPosition(formData) {
     return new Promise((resolve, reject) => {
         Position.create(formData).then((data) => {
             resolve()
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+function addProfile(formData) {
+    return new Promise((resolve, reject) => {
+        Profile.create(formData).then((data) => {
+            resolve()
+        }).catch((err) => {
+            reject(err)
         })
     })
 }
