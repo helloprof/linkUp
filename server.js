@@ -80,7 +80,10 @@ app.get("/positions", (req, res) => {
 
 app.get("/profiles/position/:id", (req, res) => {
     linkUpService.getProfileByPositionID(req.params.id).then((profile) => {
-        res.json(profile)
+        // res.json(profile)
+        res.render('profiles', {
+            profiles: [profile]
+        })
     }).catch((err) => {
         res.send(err)
     })
@@ -141,6 +144,7 @@ app.post('/profiles/new', upload.single('image'), function (req, res, next) {
     async function upload(req) {
         let result = await streamUpload(req)
         console.log(result)
+        return result
     }
 
     upload(req).then((uploaded) => {
