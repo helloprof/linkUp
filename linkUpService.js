@@ -60,11 +60,16 @@ function initialize() {
 
 function getAllProfiles() {
     return new Promise((resolve, reject) => {
-        if (profiles.length < 1) {
-            reject("no profiles found!")
-        } else {
+        // if (profiles.length < 1) {
+        //     reject("no profiles found!")
+        // } else {
+        //     resolve(profiles)
+        // }
+        Profile.findAll().then((profiles) => {
             resolve(profiles)
-        }
+        }).catch((err) => {
+            reject(err)
+        })
     })
 }
 
@@ -84,13 +89,22 @@ function getProfileByID(id) {
 function getProfileByPositionID(id) {
 
     return new Promise((resolve, reject) => {
-
-        const returnedProfile = profiles.filter((profile) => profile.position == id);
-        if (returnedProfile.length > 0) {
-            resolve(returnedProfile[0])
-        } else {
-            reject("profile not found")
-        }
+        Profile.findOne({
+            where: {
+                positionID: id,
+              },
+        }).then((profile) => {
+            resolve(profile)
+        }).catch((err) => {
+            console.log(err)
+            reject(err)
+        })
+        // const returnedProfile = profiles.filter((profile) => profile.position == id);
+        // if (returnedProfile.length > 0) {
+        //     resolve(returnedProfile[0])
+        // } else {
+        //     reject("profile not found")
+        // }
     })
 }
 
@@ -150,5 +164,6 @@ module.exports = {
     getPositionByID,
     getProfileByPositionID,
     getAllPositions,
-    addPosition
+    addPosition,
+    addProfile
 }
