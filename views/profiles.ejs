@@ -1,6 +1,7 @@
 <%- include('partials/header') %>
 <body>
   <%- include('partials/navbar') %>
+
   <div class="grid grid-cols-4 gap-4">
 
   <% profiles.forEach((profile) => { %>
@@ -19,6 +20,8 @@
       </div>
     </div>
   <% }) %>
+  <a href="/profiles/new" class="btn btn-block h-full"><i class="fa-regular fa-id-badge"></i><i class="fa-solid fa-plus"></i></a>
+
 
   </div>
 </body>
