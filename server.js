@@ -1,5 +1,6 @@
 const path = require("path")
-const linkUpService = require("./linkUpService")
+const linkUpService = require("./modules/linkUpService")
+const authService = require("./modules/authService")
 
 const express = require("express")
 const app = express()
@@ -13,7 +14,14 @@ const HTTP_PORT = 8080
 app.set('view engine', 'ejs')
 
 app.use(express.static("public"))
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }))
+
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    res.locals.errMsg = null
+    res.locals.successMsg = null
+    next()
+})
 
 // const upload = multer();
 
@@ -182,12 +190,44 @@ app.get("/profiles/:id", (req, res) => {
     })
 })
 
+app.get("/register", (req,res) => {
+    res.render("register")
+})
+
+app.post("/register", (req,res) => {
+   authService.registerUser(req.body).then((success) => {
+        res.render("register", {
+        successMsg: success,
+        })
+    }).catch((err) => {
+       res.render("register", {
+           errMsg: err,
+       })
+   })
+// res.send(req.body)
+})
+
+app.get("/login", (req, res) => {
+    res.render("login")
+})
+
+app.post("/login", (req, res) => {
+    // authService.loginUser(req.body).then(() => {
+
+    // })
+    // res.send(req.body)
+})
+
 app.get('*', function(req, res){
     res.sendStatus(404)
 })
 
 
-linkUpService.initialize().then(() => {
+
+
+linkUpService.initialize()
+.then(authService.initialize)
+.then(() => {
     app.listen(HTTP_PORT, () => {
         console.log("server listening on "+ HTTP_PORT)
     })
